@@ -27,6 +27,7 @@ class Config:
         or os.getenv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY")
     )
     SUPABASE_BUCKET = os.getenv("SUPABASE_BUCKET", "secure-files")
+    VIRUSTOTAL_API_KEY = os.getenv("VIRUSTOTAL_API_KEY")
 
     MYSQL_HOST = os.getenv("MYSQL_HOST", "localhost")
     MYSQL_PORT = int(os.getenv("MYSQL_PORT", "3306"))
@@ -51,20 +52,6 @@ class Config:
 
     MAX_FILE_SIZE = int(
         os.getenv("MAX_FILE_SIZE", "52428800")
-    )
-
-    CLAMAV_ENABLED = (
-        os.getenv("CLAMAV_ENABLED", "false").lower()
-        == "true"
-    )
-
-    CLAMAV_HOST = os.getenv(
-        "CLAMAV_HOST",
-        "localhost",
-    )
-
-    CLAMAV_PORT = int(
-        os.getenv("CLAMAV_PORT", "3310")
     )
 
     SESSION_COOKIE_SECURE = (

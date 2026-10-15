@@ -1,24 +1,93 @@
 import logging
+import time
 from pathlib import Path
+
+import httpx
 
 from config import Config
 
 logger = logging.getLogger(__name__)
 
+VIRUSTOTAL_API_URL = "https://www.virustotal.com/api/v3"
+DIRECT_UPLOAD_LIMIT = 32 * 1024 * 1024
+ANALYSIS_POLL_INTERVAL_SECONDS = 15
+MAX_ANALYSIS_POLLS = 2
+
+
+def _scan_result_from_analysis(attributes):
+    if attributes.get("status") != "completed":
+        return None
+
+    stats = attributes.get("stats")
+
+    if not isinstance(stats, dict):
+        return {
+            "status": "scan_error",
+            "message": "VirusTotal returned an invalid analysis result.",
+        }
+
+    try:
+        malicious = int(stats.get("malicious", 0))
+        suspicious = int(stats.get("suspicious", 0))
+        assessed = sum(
+            int(stats.get(category, 0))
+            for category in ("malicious", "suspicious", "harmless", "undetected")
+        )
+    except (TypeError, ValueError):
+        return {
+            "status": "scan_error",
+            "message": "VirusTotal returned invalid analysis statistics.",
+        }
+
+    if malicious > 0 or suspicious > 0:
+        return {
+            "status": "infected",
+            "message": "VirusTotal detected malicious or suspicious content.",
+            "malicious": malicious,
+            "suspicious": suspicious,
+        }
+
+    if assessed == 0:
+        return {
+            "status": "scan_error",
+            "message": "VirusTotal did not return a conclusive scan result.",
+        }
+
+    return {
+        "status": "safe",
+        "message": "VirusTotal completed the scan without detections.",
+        "malicious": 0,
+        "suspicious": 0,
+    }
+
+
+def _analysis_id(response):
+    response.raise_for_status()
+    data = response.json().get("data", {})
+    analysis_id = data.get("id")
+
+    if not isinstance(analysis_id, str) or not analysis_id:
+        raise ValueError("VirusTotal did not return an analysis ID.")
+
+    return analysis_id
+
+
+def _upload_url(client, file_size):
+    if file_size <= DIRECT_UPLOAD_LIMIT:
+        return f"{VIRUSTOTAL_API_URL}/files"
+
+    response = client.get(f"{VIRUSTOTAL_API_URL}/files/upload_url")
+    response.raise_for_status()
+    upload_url = response.json().get("data")
+
+    if not isinstance(upload_url, str) or not upload_url.startswith("https://"):
+        raise ValueError("VirusTotal returned an invalid large-file upload URL.")
+
+    return upload_url
+
 
 def scan_file(file_path):
-    """
-    Scan a file for malware.
-
-    Returns a dictionary with an explicit status:
-        safe
-        infected
-        scan_unavailable
-        scan_error
-
-    Security rule:
-    scan_unavailable must never be treated as safe.
-    """
+    """Submit a file to VirusTotal and return a fail-closed scan status."""
     path = Path(file_path)
 
     if not path.exists() or not path.is_file():
@@ -27,105 +96,67 @@ def scan_file(file_path):
             "message": "The file to scan does not exist.",
         }
 
-    if not Config.CLAMAV_ENABLED:
+    api_key = Config.VIRUSTOTAL_API_KEY
+
+    if not api_key:
         logger.warning(
-            "ClamAV scanning is disabled. File remains unverified: %s",
-            path.name,
+            "VirusTotal scanning is unavailable because its API key is not configured."
         )
-
         return {
             "status": "scan_unavailable",
-            "message": "Malware scanning is currently unavailable.",
+            "message": "VirusTotal scanning is not configured.",
         }
+
+    headers = {"x-apikey": api_key}
 
     try:
-        import clamd
-    except ImportError:
-        logger.error(
-            "ClamAV scanning is enabled but the clamd Python package is unavailable."
+        with httpx.Client(
+            headers=headers,
+            timeout=httpx.Timeout(20.0, connect=5.0),
+        ) as client:
+            upload_url = _upload_url(client, path.stat().st_size)
+
+            with path.open("rb") as file_handle:
+                response = client.post(
+                    upload_url,
+                    files={
+                        "file": (
+                            path.name,
+                            file_handle,
+                            "application/octet-stream",
+                        )
+                    },
+                )
+
+            analysis_id = _analysis_id(response)
+
+            for attempt in range(MAX_ANALYSIS_POLLS):
+                if attempt:
+                    time.sleep(ANALYSIS_POLL_INTERVAL_SECONDS)
+
+                analysis_response = client.get(
+                    f"{VIRUSTOTAL_API_URL}/analyses/{analysis_id}"
+                )
+                analysis_response.raise_for_status()
+                attributes = (
+                    analysis_response.json()
+                    .get("data", {})
+                    .get("attributes", {})
+                )
+                result = _scan_result_from_analysis(attributes)
+
+                if result is not None:
+                    return result
+
+    except httpx.HTTPStatusError as exc:
+        logger.warning(
+            "VirusTotal request failed with HTTP status %s.",
+            exc.response.status_code,
         )
+    except (httpx.HTTPError, ValueError, TypeError, KeyError):
+        logger.exception("VirusTotal scan failed for file: %s", path.name)
 
-        return {
-            "status": "scan_unavailable",
-            "message": "The ClamAV scanning dependency is unavailable.",
-        }
-
-    try:
-        scanner = clamd.ClamdNetworkSocket(
-            host=Config.CLAMAV_HOST,
-            port=Config.CLAMAV_PORT,
-            timeout=10,
-        )
-
-        scanner.ping()
-
-        with path.open("rb") as file_handle:
-            scan_result = scanner.instream(file_handle)
-
-        if not scan_result:
-            logger.error("ClamAV returned an empty scan response.")
-            return {
-                "status": "scan_error",
-                "message": "The malware scanner returned no result.",
-            }
-
-        result = scan_result.get("stream")
-
-        if not result:
-            logger.error(
-                "Unexpected ClamAV response for file: %s",
-                path.name,
-            )
-
-            return {
-                "status": "scan_error",
-                "message": "The malware scanner returned an invalid result.",
-            }
-
-        scan_status = result[0]
-        scan_signature = result[1] if len(result) > 1 else None
-
-        if scan_status == "FOUND":
-            logger.warning(
-                "ClamAV detected malware in file: %s",
-                path.name,
-            )
-
-            return {
-                "status": "infected",
-                "message": "Malware was detected in the uploaded file.",
-                "signature": scan_signature,
-            }
-
-        if scan_status == "OK":
-            logger.info(
-                "ClamAV scan completed successfully: %s",
-                path.name,
-            )
-
-            return {
-                "status": "safe",
-                "message": "ClamAV completed the scan successfully.",
-            }
-
-        logger.error(
-            "Unexpected ClamAV scan status '%s' for file: %s",
-            scan_status,
-            path.name,
-        )
-
-        return {
-            "status": "scan_error",
-            "message": "The malware scanner returned an unexpected result.",
-        }
-
-    except Exception:
-        logger.exception(
-            "ClamAV scan failed for file: %s",
-            path.name,
-        )
-
-        return {
-            "status": "scan_unavailable",
-            "message": "The malware scanning service is unavailable.",
-        }
+    return {
+        "status": "scan_unavailable",
+        "message": "VirusTotal could not complete the malware scan.",
+    }

@@ -114,6 +114,14 @@ def update_file_status(
 def upload_file():
     user_id = session["user_id"]
 
+    if request.form.get("virustotal_consent") != "yes":
+        flash(
+            "Confirm that this file may be submitted to VirusTotal for analysis. "
+            "Submitted files may be shared with its security community.",
+            "warning",
+        )
+        return redirect(url_for("dashboard.dashboard"))
+
     temporary_path = None
     encrypted_path = None
     file_id = None

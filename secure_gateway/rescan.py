@@ -2,7 +2,7 @@ import logging
 import uuid
 from pathlib import Path
 
-from flask import Blueprint, current_app, flash, redirect, session, url_for
+from flask import Blueprint, current_app, flash, redirect, request, session, url_for
 
 from db import (
     execute_query,
@@ -62,7 +62,7 @@ def cleanup_temporary_file(file_path):
 
 def rescan_pending_file(file_id, user_id):
     """
-    Decrypt an encrypted pending file temporarily, scan it with ClamAV,
+    Decrypt an encrypted pending file temporarily, scan it with VirusTotal,
     and update its status.
 
     The encrypted file is never replaced.
@@ -192,7 +192,7 @@ def rescan_pending_file(file_id, user_id):
         )
 
         # ---------------------------------------------------------
-        # 6. Scan plaintext with ClamAV
+        # 6. Submit plaintext for VirusTotal analysis
         # ---------------------------------------------------------
         scan_result = scan_file(temporary_path)
 
@@ -302,7 +302,7 @@ def rescan_pending_file(file_id, user_id):
         # 10. Unexpected scanner response
         # ---------------------------------------------------------
         logger.error(
-            "Unexpected ClamAV scan status '%s' for file ID %s.",
+            "Unexpected VirusTotal scan status '%s' for file ID %s.",
             scan_status,
             file_id,
         )
@@ -347,6 +347,14 @@ def rescan_file(file_id):
     """
 
     user_id = session["user_id"]
+
+    if request.form.get("virustotal_consent") != "yes":
+        flash(
+            "Confirm that the decrypted file may be submitted to VirusTotal. "
+            "Submitted files may be shared with its security community.",
+            "warning",
+        )
+        return redirect(url_for("dashboard.dashboard"))
 
     result = rescan_pending_file(
         file_id=file_id,

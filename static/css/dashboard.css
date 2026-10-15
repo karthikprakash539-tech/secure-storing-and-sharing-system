@@ -662,6 +662,32 @@ select:focus-visible {
     white-space: nowrap;
 }
 
+.virustotal-consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+    margin: 12px 0;
+    color: var(--dash-muted);
+    font-size: 12px;
+    line-height: 1.5;
+    text-align: left;
+}
+
+.virustotal-consent input[type="checkbox"] {
+    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    margin-top: 1px;
+    accent-color: var(--dash-blue);
+}
+
+.rescan-consent {
+    max-width: 240px;
+    margin: 0 0 6px;
+    font-size: 10px;
+}
+
 .primary-btn,
 .upload-submit-btn {
     display: inline-flex;

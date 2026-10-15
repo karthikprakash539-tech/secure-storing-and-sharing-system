@@ -6,7 +6,7 @@ Secure Gateway is a Flask application for authenticated file uploads, malware sc
 
 - Python 3.10 or newer
 - MySQL for local development, or a Supabase project with the provided tables already created
-- ClamAV daemon if malware scanning is enabled
+- VirusTotal API key for malware scanning
 
 ## Local Setup
 
@@ -28,7 +28,7 @@ MYSQL_PORT=3306
 MYSQL_USER=root
 MYSQL_PASSWORD=your-mysql-password
 MYSQL_DB=secure_gateway
-CLAMAV_ENABLED=false
+VIRUSTOTAL_API_KEY=your-private-virustotal-api-key
 SESSION_COOKIE_SECURE=false
 ```
 
@@ -40,17 +40,13 @@ python app.py
 
 Open `http://127.0.0.1:5000`.
 
-## ClamAV Scanning
+## VirusTotal Scanning
 
-Uploads already use ClamAV through the `clamd` client; no VirusTotal API key is used. To scan locally, start a ClamAV daemon that accepts TCP connections on port `3310`, then set:
+Uploads and rescans submit plaintext files to VirusTotal API v3. The API key is read only by the Flask server from `VIRUSTOTAL_API_KEY`; never use a `NEXT_PUBLIC_` variable or commit the key.
 
-```dotenv
-CLAMAV_ENABLED=true
-CLAMAV_HOST=localhost
-CLAMAV_PORT=3310
-```
+VirusTotal states that submitted files may be shared with its security community. The upload and rescan forms therefore require explicit consent. Do not submit confidential, personal, or otherwise sensitive documents. If the API key is missing, the API is rate-limited, or an analysis is not completed, the file stays pending and is not marked safe.
 
-The daemon must have current virus definitions and be reachable from the Flask process. If the scanner is unavailable, the application does not mark files as safe.
+VirusTotal's direct file-upload endpoint accepts files up to 32 MB. Larger files use its one-time upload URL endpoint. This project allows uploads up to 50 MB.
 
 ## Supabase Database
 
@@ -75,9 +71,9 @@ File bytes are currently stored on the application server's local filesystem; co
 
 ## Deployment
 
-**Render is the better fit for the current application.** It runs Flask as a persistent web service and can connect to Supabase PostgreSQL. Vercel is designed around serverless functions, while this app expects writable local directories for uploads, encryption, quarantine, and logs, and may need a reachable ClamAV daemon. Those local files are not durable on either platform's ephemeral filesystem.
+**Render is the better fit for the current application.** It runs Flask as a persistent web service and can connect to Supabase PostgreSQL. Vercel is designed around serverless functions, while this app expects writable local directories for uploads, encryption, quarantine, and logs. Those local files are not durable on either platform's ephemeral filesystem.
 
-For Render, use `pip install -r requirements.txt` as the build command and `gunicorn app:app --bind 0.0.0.0:$PORT` as the start command. Configure the Supabase database URL and `SECRET_KEY` as private environment variables, add a persistent disk and set `UPLOAD_FOLDER`, `ENCRYPTED_FOLDER`, and `QUARANTINE_FOLDER` to paths on that disk, and provide a reachable ClamAV daemon if scanning is enabled. The Blueprint leaves scanning disabled because a local Windows daemon cannot be reached from Render. For scalable production storage, implement and use Supabase Storage in the upload, download, sharing, and deletion flows before relying on ephemeral application storage.
+For Render, use `pip install -r requirements.txt` as the build command and `gunicorn app:app --bind 0.0.0.0:$PORT --timeout 120` as the start command. Configure `SUPABASE_DB_URL`, `SECRET_KEY`, and `VIRUSTOTAL_API_KEY` as private environment variables. Add a persistent disk and set `UPLOAD_FOLDER`, `ENCRYPTED_FOLDER`, and `QUARANTINE_FOLDER` to paths on that disk. For scalable production storage, implement and use Supabase Storage in the upload, download, sharing, and deletion flows before relying on ephemeral application storage.
 
-This repository includes a Render Blueprint in [`render.yaml`](render.yaml). Push the project to a GitHub repository, then create a Blueprint in the Render dashboard from that repository. Set `SUPABASE_DB_URL` in the Render service's private environment settings before the first deploy. The Blueprint uses a paid web-service plan and persistent disk. Malware scanning is disabled in the Blueprint because the local Windows ClamAV daemon is not reachable from Render; configure a network-accessible ClamAV service before enabling it. The application will not be fully useful for production file security until scanning is available and uploaded files are stored durably.
+This repository includes a Render Blueprint in [`render.yaml`](render.yaml). Push the project to a GitHub repository, then create a Blueprint in the Render dashboard from that repository. Set `SUPABASE_DB_URL` and `VIRUSTOTAL_API_KEY` in the Render service's private environment settings before the first deploy. The Blueprint uses a paid web-service plan and persistent disk. VirusTotal scanning is unavailable until a valid API key is configured. The application will not be fully useful for production file security until scanning is available and uploaded files are stored durably.
 "# secure-storing-and-sharing-system" 

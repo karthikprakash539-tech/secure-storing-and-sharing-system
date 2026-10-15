@@ -513,6 +513,18 @@
                         accept=".pdf,.txt,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.zip"
                     >
 
+                    <label class="virustotal-consent">
+                        <input
+                            type="checkbox"
+                            name="virustotal_consent"
+                            value="yes"
+                            required
+                        >
+                        <span>
+                            I understand this file will be sent to VirusTotal and may be shared with its security community. I will not submit confidential files.
+                        </span>
+                    </label>
+
 
                     <button
                         type="button"
@@ -1015,6 +1027,16 @@
                                                     name="csrf_token"
                                                     value="{{ csrf_token() }}"
                                                 >
+
+                                                <label class="virustotal-consent rescan-consent">
+                                                    <input
+                                                        type="checkbox"
+                                                        name="virustotal_consent"
+                                                        value="yes"
+                                                        required
+                                                    >
+                                                    <span>Submit decrypted file to VirusTotal for analysis and possible community sharing.</span>
+                                                </label>
 
                                                 <button
                                                     type="submit"
