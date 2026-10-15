@@ -10,6 +10,7 @@ from flask import (
     session,
     url_for,
 )
+from flask_wtf.csrf import generate_csrf
 from werkzeug.security import (
     check_password_hash,
     generate_password_hash,
@@ -267,7 +268,10 @@ def login():
         )
         return render_template("login.html")
 
+    csrf_session_token = session.get("csrf_token")
     session.clear()
+    if csrf_session_token:
+        session["csrf_token"] = csrf_session_token
 
     session["user_id"] = user["id"]
     session["full_name"] = user["full_name"]
