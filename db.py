@@ -138,7 +138,10 @@ def execute_query(
     """
 
     with get_db() as connection:
-        cursor = connection.cursor(dictionary=True)
+        if Config.DATABASE_BACKEND == "supabase":
+            cursor = connection.cursor()
+        else:
+            cursor = connection.cursor(dictionary=True)
 
         try:
             cursor.execute(query, params or ())
@@ -208,7 +211,10 @@ def execute_transaction_query(
     operations must succeed or fail together.
     """
 
-    cursor = connection.cursor(dictionary=True)
+    if Config.DATABASE_BACKEND == "supabase":
+        cursor = connection.cursor()
+    else:
+        cursor = connection.cursor(dictionary=True)
 
     try:
         cursor.execute(query, params or ())
