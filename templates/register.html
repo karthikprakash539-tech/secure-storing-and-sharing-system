@@ -1,0 +1,1007 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#080b14">
+
+    <title>Create Account | Secure File Gateway</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+          rel="stylesheet">
+
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #080b14;
+            --panel: rgba(17, 24, 41, .82);
+            --border: rgba(148, 163, 184, .15);
+            --text: #f3f6ff;
+            --muted: #8f9bb3;
+            --blue: #67a7ff;
+            --purple: #9b8cff;
+            --green: #4adea5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Inter, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(ellipse at 12% 20%, rgba(49, 91, 190, .18), transparent 40%),
+                radial-gradient(ellipse at 88% 82%, rgba(113, 69, 211, .14), transparent 36%),
+                var(--bg);
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: .17;
+            background-image:
+                linear-gradient(rgba(132, 157, 208, .08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(132, 157, 208, .08) 1px, transparent 1px);
+            background-size: 48px 48px;
+            mask-image: linear-gradient(to bottom, black, transparent 90%);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button, input, select {
+            font: inherit;
+        }
+
+        button, a, input, select {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .page {
+            position: relative;
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(420px, .88fr);
+            max-width: 1500px;
+            margin: auto;
+        }
+
+        /* LEFT BRAND PANEL */
+
+        .brand-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 42px clamp(28px, 5vw, 78px);
+            min-height: 100vh;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            width: fit-content;
+        }
+
+        .brand-icon {
+            display: grid;
+            place-items: center;
+            width: 43px;
+            height: 43px;
+            border: 1px solid rgba(115, 165, 255, .4);
+            border-radius: 14px;
+            color: #dbeafe;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 23px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #244b91, #523d9b);
+            box-shadow: 0 0 28px rgba(82, 117, 255, .19);
+        }
+
+        .brand-name {
+            display: block;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: -.5px;
+        }
+
+        .brand-subtitle {
+            display: block;
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 11px;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+        }
+
+        .brand-content {
+            max-width: 570px;
+            margin: 65px 0;
+            animation: rise .7s ease both;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            color: #a8c9ff;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 24px;
+            height: 2px;
+            background: var(--blue);
+            box-shadow: 0 0 12px var(--blue);
+        }
+
+        .brand-content h1 {
+            margin-top: 24px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(38px, 4.3vw, 65px);
+            font-weight: 700;
+            line-height: 1.09;
+            letter-spacing: -2.8px;
+        }
+
+        .gradient-text {
+            display: block;
+            color: transparent;
+            background: linear-gradient(95deg, #80baff, #b0a1ff 75%);
+            background-clip: text;
+            -webkit-background-clip: text;
+        }
+
+        .brand-description {
+            max-width: 455px;
+            margin-top: 22px;
+            color: #a2aec4;
+            font-size: 14px;
+            line-height: 1.9;
+        }
+
+        .security-list {
+            display: grid;
+            gap: 13px;
+            margin-top: 36px;
+        }
+
+        .security-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 17px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            background: rgba(17, 25, 43, .48);
+            transition: border-color .25s, transform .25s, background .25s;
+        }
+
+        .security-item:hover {
+            transform: translateX(4px);
+            border-color: rgba(103, 167, 255, .35);
+            background: rgba(28, 40, 66, .65);
+        }
+
+        .security-icon {
+            display: grid;
+            place-items: center;
+            flex: 0 0 40px;
+            height: 40px;
+            border: 1px solid rgba(103, 167, 255, .2);
+            border-radius: 12px;
+            color: #a8c9ff;
+            background: rgba(74, 125, 230, .12);
+            font-size: 18px;
+        }
+
+        .security-item strong {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .security-item p {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .brand-bottom {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #7d8ba5;
+            font-size: 11px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 12px rgba(74, 222, 165, .65);
+        }
+
+        /* RIGHT FORM PANEL */
+
+        .form-panel {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 36px clamp(20px, 4vw, 65px);
+            border-left: 1px solid rgba(148, 163, 184, .09);
+            background: rgba(8, 12, 23, .4);
+        }
+
+        .form-card {
+            width: 100%;
+            max-width: 465px;
+            padding: clamp(23px, 3.3vw, 42px);
+            border: 1px solid rgba(148, 163, 184, .17);
+            border-radius: 25px;
+            background: var(--panel);
+            box-shadow: 0 25px 90px rgba(0, 0, 0, .28);
+            backdrop-filter: blur(24px);
+            animation: rise .65s ease both;
+        }
+
+        .mobile-brand {
+            display: none;
+            margin-bottom: 32px;
+        }
+
+        .form-topline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .form-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 11px;
+            border: 1px solid rgba(103, 167, 255, .22);
+            border-radius: 8px;
+            color: #a8c9ff;
+            background: rgba(75, 123, 222, .09);
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+        }
+
+        .form-badge::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--blue);
+        }
+
+        .step-label {
+            color: #7f8da7;
+            font-size: 11px;
+        }
+
+        .form-header h2 {
+            margin-top: 23px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(27px, 2.8vw, 35px);
+            letter-spacing: -1.2px;
+        }
+
+        .form-header p {
+            margin-top: 9px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .flash-stack {
+            display: grid;
+            gap: 9px;
+            margin-top: 20px;
+        }
+
+        .flash-message {
+            padding: 12px 14px;
+            border: 1px solid rgba(248, 113, 113, .25);
+            border-radius: 10px;
+            color: #fecaca;
+            background: rgba(127, 29, 29, .18);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .flash-success {
+            border-color: rgba(74, 222, 165, .25);
+            color: #a7f3d0;
+            background: rgba(6, 78, 59, .2);
+        }
+
+        .auth-form {
+            display: grid;
+            gap: 17px;
+            margin-top: 26px;
+        }
+
+        .form-group {
+            min-width: 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 9px;
+            color: #d7deed;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap input,
+        .input-wrap select,
+        .form-group > input,
+        .form-group > select {
+            width: 100%;
+            min-height: 48px;
+            padding: 13px 14px;
+            border: 1px solid rgba(148, 163, 184, .19);
+            border-radius: 11px;
+            outline: none;
+            color: #f3f6ff;
+            background: rgba(5, 9, 19, .52);
+            font-size: 12px;
+            transition: border-color .2s, box-shadow .2s, background .2s;
+        }
+
+        .input-wrap input {
+            padding-right: 66px;
+        }
+
+        .form-group input::placeholder {
+            color: #64718a;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: rgba(103, 167, 255, .8);
+            background: rgba(15, 23, 42, .85);
+            box-shadow: 0 0 0 4px rgba(103, 167, 255, .09);
+        }
+
+        .form-group select {
+            cursor: pointer;
+        }
+
+        .form-group option {
+            color: #f3f6ff;
+            background: #101727;
+        }
+
+        .password-toggle {
+            position: absolute;
+            top: 50%;
+            right: 12px;
+            transform: translateY(-50%);
+            border: 0;
+            color: #91baff;
+            background: transparent;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .password-toggle:hover {
+            color: #dbeafe;
+        }
+
+        .field-hint {
+            display: block;
+            margin-top: 7px;
+            color: #78869e;
+            font-size: 10px;
+            line-height: 1.6;
+        }
+
+        .strength-track {
+            height: 4px;
+            margin-top: 9px;
+            overflow: hidden;
+            border-radius: 10px;
+            background: rgba(148, 163, 184, .15);
+        }
+
+        .strength-fill {
+            width: 0;
+            height: 100%;
+            border-radius: inherit;
+            background: #ef4444;
+            transition: width .25s, background .25s;
+        }
+
+        .strength-label {
+            display: block;
+            min-height: 15px;
+            margin-top: 6px;
+            color: #8593aa;
+            font-size: 10px;
+        }
+
+        .match-message {
+            display: block;
+            margin-top: 7px;
+            font-size: 10px;
+        }
+
+        .terms-check {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            color: #9ba8be;
+            font-size: 11px;
+            line-height: 1.8;
+            cursor: pointer;
+        }
+
+        .terms-check input {
+            flex: 0 0 auto;
+            width: 15px;
+            height: 15px;
+            margin-top: 2px;
+            accent-color: #729dff;
+            cursor: pointer;
+        }
+
+        .terms-check a {
+            color: #9fc3ff;
+            text-decoration: underline;
+            text-decoration-color: rgba(159, 195, 255, .4);
+            text-underline-offset: 3px;
+        }
+
+        .terms-check a:hover {
+            color: white;
+        }
+
+        .auth-submit {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            min-height: 51px;
+            margin-top: 2px;
+            border: 1px solid rgba(255, 255, 255, .18);
+            border-radius: 12px;
+            color: white;
+            background: linear-gradient(100deg, #3678e7, #7258d8);
+            box-shadow: 0 9px 28px rgba(72, 101, 220, .22);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            transition: transform .2s, filter .2s, box-shadow .2s;
+        }
+
+        .auth-submit:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.12);
+            box-shadow: 0 12px 34px rgba(72, 101, 220, .33);
+        }
+
+        .auth-submit:active {
+            transform: translateY(0);
+        }
+
+        .auth-submit:focus-visible,
+        .password-toggle:focus-visible,
+        a:focus-visible {
+            outline: 2px solid #9fc3ff;
+            outline-offset: 4px;
+        }
+
+        .submit-arrow {
+            font-size: 18px;
+            transition: transform .2s;
+        }
+
+        .auth-submit:hover .submit-arrow {
+            transform: translateX(4px);
+        }
+
+        .form-footer {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(148, 163, 184, .12);
+            color: #8e9bb2;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        .form-footer a {
+            margin-left: 4px;
+            color: #a9caff;
+            font-weight: 700;
+        }
+
+        .form-footer a:hover {
+            color: white;
+        }
+
+        .privacy-note {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 7px;
+            margin-top: 18px;
+            color: #6f7d94;
+            font-size: 10px;
+        }
+
+        .privacy-note span {
+            color: #9dbaff;
+        }
+
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 1000px) {
+            .page {
+                grid-template-columns: minmax(0, .9fr) minmax(390px, 1.1fr);
+            }
+
+            .brand-panel {
+                padding: 32px 28px;
+            }
+
+            .brand-content h1 {
+                font-size: 43px;
+                letter-spacing: -1.8px;
+            }
+
+            .form-panel {
+                padding: 28px 20px;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .page {
+                display: block;
+            }
+
+            .brand-panel {
+                display: none;
+            }
+
+            .form-panel {
+                min-height: 100vh;
+                padding: 24px 16px;
+                border-left: 0;
+                background: transparent;
+            }
+
+            .form-card {
+                max-width: 490px;
+                padding: 25px 21px;
+                border-radius: 21px;
+            }
+
+            .mobile-brand {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .form-header h2 {
+                font-size: 30px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .form-panel {
+                padding: 14px 10px;
+            }
+
+            .form-card {
+                padding: 21px 15px;
+            }
+
+            .form-topline {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                scroll-behavior: auto !important;
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<main class="page">
+
+    <!-- LEFT: BRANDING -->
+    <section class="brand-panel">
+        <a href="{{ url_for('index') }}" class="brand">
+            <span class="brand-icon">S</span>
+            <span>
+                <span class="brand-name">Secure File Gateway</span>
+                <span class="brand-subtitle">Protected file workspace</span>
+            </span>
+        </a>
+
+        <div class="brand-content">
+            <span class="eyebrow">SECURE FILE INFRASTRUCTURE</span>
+
+            <h1>
+                Protect your files.
+                <span class="gradient-text">Control your data.</span>
+            </h1>
+
+            <p class="brand-description">
+                Create your account and manage your file workflow from one
+                security-focused workspace built for safer storage, scanning
+                and controlled sharing.
+            </p>
+
+            <div class="security-list">
+                <div class="security-item">
+                    <div class="security-icon" aria-hidden="true">◇</div>
+                    <div>
+                        <strong>File encryption</strong>
+                        <p>Protect stored files through the application's configured encryption workflow.</p>
+                    </div>
+                </div>
+
+                <div class="security-item">
+                    <div class="security-icon" aria-hidden="true">⌕</div>
+                    <div>
+                        <strong>Malware scanning</strong>
+                        <p>Check uploaded files using the available scanning configuration.</p>
+                    </div>
+                </div>
+
+                <div class="security-item">
+                    <div class="security-icon" aria-hidden="true">↗</div>
+                    <div>
+                        <strong>Controlled file sharing</strong>
+                        <p>Share files through the application's available link controls.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="brand-bottom">
+            <span class="status-dot"></span>
+            <span>Secure File Gateway · Account registration</span>
+        </div>
+    </section>
+
+    <!-- RIGHT: REGISTRATION FORM -->
+    <section class="form-panel">
+        <div class="form-card">
+
+            <a href="{{ url_for('index') }}" class="brand mobile-brand">
+                <span class="brand-icon">S</span>
+                <span>
+                    <span class="brand-name">Secure File Gateway</span>
+                    <span class="brand-subtitle">Protected file workspace</span>
+                </span>
+            </a>
+
+            <header class="form-header">
+                <div class="form-topline">
+                    <span class="form-badge">CREATE ACCOUNT</span>
+                    <span class="step-label">Get started</span>
+                </div>
+
+                <h2>Create your account</h2>
+                <p>Enter your details to set up your secure workspace.</p>
+            </header>
+
+            <!-- Flask flash messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-stack" aria-live="polite">
+                        {% for category, message in messages %}
+                            <div class="flash-message flash-{{ category }}" role="alert">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form
+                class="auth-form"
+                id="registerForm"
+                method="POST"
+                action="{{ url_for('auth.register') }}"
+                autocomplete="on"
+            >
+                <!-- Keep CSRF protection enabled -->
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+                <div class="form-group">
+                    <label for="full_name">Full name</label>
+                    <div class="input-wrap">
+                        <input
+                            id="full_name"
+                            name="full_name"
+                            type="text"
+                            placeholder="Enter your full name"
+                            maxlength="150"
+                            autocomplete="name"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <div class="input-wrap">
+                        <input
+                            id="email"
+                            name="email"
+                            type="email"
+                            placeholder="you@example.com"
+                            maxlength="255"
+                            autocomplete="email"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrap">
+                        <input
+                            id="password"
+                            name="password"
+                            type="password"
+                            placeholder="Create a strong password"
+                            minlength="8"
+                            autocomplete="new-password"
+                            aria-describedby="passwordHint passwordStrength"
+                            required
+                        >
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            data-password-toggle="password"
+                            aria-controls="password"
+                            aria-label="Show password"
+                            aria-pressed="false"
+                        >Show</button>
+                    </div>
+
+                    <div class="strength-track" aria-hidden="true">
+                        <div class="strength-fill" id="strengthFill"></div>
+                    </div>
+                    <span class="strength-label" id="passwordStrength" aria-live="polite">
+                        Password strength will appear here.
+                    </span>
+                    <span class="field-hint" id="passwordHint">
+                        Use at least 8 characters. A longer, unique password is recommended.
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password">Confirm password</label>
+                    <div class="input-wrap">
+                        <input
+                            id="confirm_password"
+                            name="confirm_password"
+                            type="password"
+                            placeholder="Re-enter your password"
+                            minlength="8"
+                            autocomplete="new-password"
+                            required
+                        >
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            data-password-toggle="confirm_password"
+                            aria-controls="confirm_password"
+                            aria-label="Show confirm password"
+                            aria-pressed="false"
+                        >Show</button>
+                    </div>
+                    <span class="match-message" id="matchMessage" aria-live="polite"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="security_question">Security question</label>
+                    <select id="security_question" name="security_question" required>
+                        <option value="" selected disabled>Select a security question</option>
+                        <option value="What was the name of your first school?">
+                            What was the name of your first school?
+                        </option>
+                        <option value="What is your favorite childhood place?">
+                            What is your favorite childhood place?
+                        </option>
+                        <option value="What was your first pet's name?">
+                            What was your first pet's name?
+                        </option>
+                        <option value="What is your favorite book?">
+                            What is your favorite book?
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="security_answer">Security answer</label>
+                    <input
+                        id="security_answer"
+                        name="security_answer"
+                        type="text"
+                        placeholder="Enter your answer"
+                        maxlength="255"
+                        autocomplete="off"
+                        required
+                    >
+                    <span class="field-hint">
+                        Choose an answer you can remember and keep it private.
+                    </span>
+                </div>
+
+                <label class="terms-check">
+                    <input type="checkbox" name="terms" required>
+                    <span>
+                        I agree to the
+                        <a href="{{ url_for('terms') }}" target="_blank" rel="noopener noreferrer">
+                            Terms &amp; Security Policy
+                        </a>.
+                    </span>
+                </label>
+
+                <button type="submit" class="auth-submit">
+                    <span>Create secure account</span>
+                    <span class="submit-arrow" aria-hidden="true">→</span>
+                </button>
+            </form>
+
+            <footer class="form-footer">
+                Already have an account?
+                <a href="{{ url_for('auth.login') }}">Sign in →</a>
+            </footer>
+
+            <div class="privacy-note">
+                <span aria-hidden="true">◆</span>
+                Keep your credentials private and secure.
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    // Toggle visibility for both password fields.
+    document.querySelectorAll("[data-password-toggle]").forEach((button) => {
+        button.addEventListener("click", () => {
+            const input = document.getElementById(button.dataset.passwordToggle);
+            const isVisible = input.type === "text";
+
+            input.type = isVisible ? "password" : "text";
+            button.textContent = isVisible ? "Show" : "Hide";
+            button.setAttribute("aria-pressed", String(!isVisible));
+            button.setAttribute(
+                "aria-label",
+                `${isVisible ? "Show" : "Hide"} ${input.id === "password" ? "password" : "confirm password"}`
+            );
+        });
+    });
+
+    // Helpful client-side password strength feedback.
+    // The backend must still enforce its own password rules.
+    const password = document.getElementById("password");
+    const strengthFill = document.getElementById("strengthFill");
+    const strengthLabel = document.getElementById("passwordStrength");
+
+    password.addEventListener("input", () => {
+        const value = password.value;
+        let score = 0;
+
+        if (value.length >= 8) score++;
+        if (value.length >= 12) score++;
+        if (/[a-z]/.test(value) && /[A-Z]/.test(value)) score++;
+        if (/\d/.test(value)) score++;
+        if (/[^A-Za-z0-9]/.test(value)) score++;
+
+        const levels = [
+            { label: "Enter a password.", width: "0%", color: "#ef4444" },
+            { label: "Weak password", width: "20%", color: "#ef4444" },
+            { label: "Fair password", width: "40%", color: "#f97316" },
+            { label: "Good password", width: "60%", color: "#eab308" },
+            { label: "Strong password", width: "80%", color: "#4ade80" },
+            { label: "Very strong password", width: "100%", color: "#4adea5" }
+        ];
+
+        const level = value.length === 0
+            ? levels[0]
+            : levels[Math.max(1, score)];
+
+        strengthFill.style.width = level.width;
+        strengthFill.style.background = level.color;
+        strengthLabel.textContent = level.label;
+
+        checkPasswordMatch();
+    });
+
+    // Check whether the confirmation matches before submission.
+    const confirmPassword = document.getElementById("confirm_password");
+    const matchMessage = document.getElementById("matchMessage");
+    const registerForm = document.getElementById("registerForm");
+
+    function checkPasswordMatch() {
+        if (!confirmPassword.value) {
+            matchMessage.textContent = "";
+            confirmPassword.setCustomValidity("");
+            return true;
+        }
+
+        const matches = password.value === confirmPassword.value;
+
+        matchMessage.textContent = matches
+            ? "Passwords match."
+            : "Passwords do not match.";
+
+        matchMessage.style.color = matches ? "#4adea5" : "#fca5a5";
+        confirmPassword.setCustomValidity(
+            matches ? "" : "Passwords do not match."
+        );
+
+        return matches;
+    }
+
+    confirmPassword.addEventListener("input", checkPasswordMatch);
+
+    registerForm.addEventListener("submit", (event) => {
+        if (!checkPasswordMatch()) {
+            event.preventDefault();
+            confirmPassword.reportValidity();
+        }
+    });
+</script>
+</body>
+</html>
+```

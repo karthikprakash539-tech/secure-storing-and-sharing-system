@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Secure File Gateway authentication"
+    >
+
+    <title>Sign In | Secure File Gateway</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/login.css') }}"
+    >
+</head>
+
+<body class="sg-login-page">
+
+    <main class="sg-login-shell">
+
+        <!-- =========================================
+             BACKGROUND SECURITY VISUAL
+        ========================================== -->
+
+        <div class="sg-background">
+            <div class="sg-grid"></div>
+            <div class="sg-glow sg-glow-one"></div>
+            <div class="sg-glow sg-glow-two"></div>
+
+            <div class="sg-scan-line"></div>
+        </div>
+
+
+        <!-- =========================================
+             LEFT BRAND / PRODUCT SIDE
+        ========================================== -->
+
+        <section class="sg-brand-panel">
+
+            <div class="sg-brand-top">
+
+                <a
+                    href="{{ url_for('index') }}"
+                    class="sg-brand"
+                    aria-label="Secure File Gateway home"
+                >
+                    <span class="sg-brand-mark">
+                        <svg
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
+                            <path
+                                d="M12 2.5 4.5 5.4v5.7c0 4.8 3 8.9 7.5 10.4 4.5-1.5 7.5-5.6 7.5-10.4V5.4L12 2.5Z"
+                            />
+
+                            <path
+                                d="m9.2 12.1 1.8 1.8 4-4.1"
+                            />
+                        </svg>
+                    </span>
+
+                    <span class="sg-brand-text">
+                        <strong>Secure</strong>
+                        <span>File Gateway</span>
+                    </span>
+                </a>
+
+            </div>
+
+
+            <div class="sg-brand-content">
+
+                <div class="sg-status-pill">
+                    <span class="sg-status-dot"></span>
+                    SECURE FILE INFRASTRUCTURE
+                </div>
+
+
+                <h1>
+                    Your files.
+                    <span>Your control.</span>
+                </h1>
+
+
+                <p class="sg-brand-description">
+                    A protected workspace for storing, scanning,
+                    encrypting and securely sharing your files.
+                </p>
+
+
+                <!-- Security cards -->
+
+                <div class="sg-security-stack">
+
+                    <div class="sg-security-card">
+
+                        <div class="sg-security-icon">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M12 3 5 6v5c0 4.2 2.5 7.8 7 9 4.5-1.2 7-4.8 7-9V6l-7-3Z"/>
+                                <path d="m9.3 12 1.7 1.7 3.7-3.8"/>
+                            </svg>
+                        </div>
+
+                        <div>
+                            <strong>AES-256 Protection</strong>
+                            <span>
+                                Files are encrypted before protected storage.
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="sg-security-card">
+
+                        <div class="sg-security-icon">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M4 12a8 8 0 0 1 16 0"/>
+                                <path d="M4 12v5a2 2 0 0 0 2 2h1v-7H6a2 2 0 0 0-2 0Z"/>
+                                <path d="M20 12v5a2 2 0 0 1-2 2h-1v-7h1a2 2 0 0 1 2 0Z"/>
+                                <path d="M12 4v2"/>
+                            </svg>
+                        </div>
+
+                        <div>
+                            <strong>Security Scanning</strong>
+                            <span>
+                                Uploaded content passes through validation.
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="sg-security-card">
+
+                        <div class="sg-security-icon">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="12" cy="12" r="8"/>
+                                <path d="M12 8v4l2.5 2.5"/>
+                            </svg>
+                        </div>
+
+                        <div>
+                            <strong>Controlled Access</strong>
+                            <span>
+                                Authentication protects your private workspace.
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="sg-brand-footer">
+
+                <span class="sg-footer-line"></span>
+
+                <span>
+                    Secure File Gateway
+                </span>
+
+                <span class="sg-footer-version">
+                    PROTECTED ENVIRONMENT
+                </span>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================================
+             LOGIN SIDE
+        ========================================== -->
+
+        <section class="sg-auth-panel">
+
+            <div class="sg-auth-container">
+
+                <!-- Mobile brand -->
+
+                <div class="sg-mobile-brand">
+
+                    <span class="sg-mobile-mark">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path
+                                d="M12 2.5 4.5 5.4v5.7c0 4.8 3 8.9 7.5 10.4 4.5-1.5 7.5-5.6 7.5-10.4V5.4L12 2.5Z"
+                            />
+                            <path d="m9.2 12.1 1.8 1.8 4-4.1"/>
+                        </svg>
+                    </span>
+
+                    <span>
+                        <strong>Secure File Gateway</strong>
+                        <small>Protected workspace</small>
+                    </span>
+
+                </div>
+
+
+                <!-- Auth header -->
+
+                <div class="sg-auth-header">
+
+                    <div class="sg-auth-label">
+                        <span class="sg-auth-label-line"></span>
+                        SECURE ACCESS
+                    </div>
+
+                    <h2>
+                        Welcome back<span>.</span>
+                    </h2>
+
+                    <p>
+                        Sign in to access your protected file workspace.
+                    </p>
+
+                </div>
+
+
+                <!-- Flash messages -->
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+
+                    {% if messages %}
+
+                        <div class="sg-flash-stack">
+
+                            {% for category, message in messages %}
+
+                                <div
+                                    class="sg-flash sg-flash-{{ category }}"
+                                    role="alert"
+                                >
+                                    <span class="sg-flash-icon">
+                                        {% if category == 'success' %}
+                                            ✓
+                                        {% elif category == 'warning' %}
+                                            !
+                                        {% else %}
+                                            !
+                                        {% endif %}
+                                    </span>
+
+                                    <span>{{ message }}</span>
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+                {% endwith %}
+
+
+                <!-- Login form -->
+
+                <form
+                    method="POST"
+                    action="{{ url_for('auth.login') }}"
+                    class="sg-login-form"
+                    autocomplete="on"
+                >
+
+                    <input
+    type="hidden"
+    name="csrf_token"
+    value="{{ csrf_token() }}"
+>
+
+
+                    <!-- Email -->
+
+                    <div class="sg-field">
+
+                        <label for="email">
+                            Email address
+                        </label>
+
+                        <div class="sg-input-wrapper">
+
+                            <span class="sg-input-icon">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <rect
+                                        x="3"
+                                        y="5"
+                                        width="18"
+                                        height="14"
+                                        rx="2"
+                                    />
+                                    <path d="m4 7 8 6 8-6"/>
+                                </svg>
+                            </span>
+
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                placeholder="you@example.com"
+                                autocomplete="email"
+                                maxlength="255"
+                                required
+                            />
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Password -->
+
+                    <div class="sg-field">
+
+                        <div class="sg-field-heading">
+
+                            <label for="password">
+                                Password
+                            </label>
+
+                        </div>
+
+
+                        <div class="sg-input-wrapper">
+
+                            <span class="sg-input-icon">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <rect
+                                        x="5"
+                                        y="10"
+                                        width="14"
+                                        height="10"
+                                        rx="2"
+                                    />
+                                    <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+                                </svg>
+                            </span>
+
+
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                placeholder="Enter your password"
+                                autocomplete="current-password"
+                                required
+                            />
+
+
+                            <button
+                                type="button"
+                                class="sg-password-toggle"
+                                id="sg-password-toggle"
+                                aria-label="Show password"
+                            >
+                                Show
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Security status -->
+
+                    <div class="sg-session-status">
+
+                        <span class="sg-session-icon">
+
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M12 3 5 6v5c0 4.2 2.5 7.8 7 9 4.5-1.2 7-4.8 7-9V6l-7-3Z"/>
+                                <path d="m9.3 12 1.7 1.7 3.7-3.8"/>
+                            </svg>
+
+                        </span>
+
+                        <span>
+                            <strong>Protected session</strong>
+                            <small>Encrypted authentication channel</small>
+                        </span>
+
+                        <span class="sg-session-dot"></span>
+
+                    </div>
+
+
+                    <!-- Submit -->
+
+                    <button
+                        type="submit"
+                        class="sg-submit-button"
+                    >
+
+                        <span class="sg-submit-text">
+                            Sign in securely
+                        </span>
+
+                        <span class="sg-submit-arrow">
+                            →
+                        </span>
+
+                    </button>
+
+                </form>
+
+
+                <!-- Divider -->
+
+                <div class="sg-divider">
+                    <span></span>
+                    <small>OR</small>
+                    <span></span>
+                </div>
+
+
+                <!-- Register -->
+
+                <div class="sg-register-prompt">
+
+                    <span>Don't have an account?</span>
+
+                    <a href="{{ url_for('auth.register') }}">
+                        Create an account
+                        <span>↗</span>
+                    </a>
+
+                </div>
+
+
+                <!-- Security footer -->
+
+                <div class="sg-auth-footer">
+
+                    <span class="sg-lock">
+
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <rect
+                                x="5"
+                                y="10"
+                                width="14"
+                                height="10"
+                                rx="2"
+                            />
+                            <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+                        </svg>
+
+                    </span>
+
+                    <span>
+                        Your authentication is protected.
+                    </span>
+
+                    <a href="{{ url_for('terms') }}">
+                        Security &amp; Terms
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================================
+         PASSWORD TOGGLE
+    ========================================== -->
+
+    <script>
+        (() => {
+            const password = document.getElementById("password");
+            const toggle = document.getElementById("sg-password-toggle");
+
+            if (!password || !toggle) {
+                return;
+            }
+
+            toggle.addEventListener("click", () => {
+                const isPassword = password.type === "password";
+
+                password.type = isPassword ? "text" : "password";
+
+                toggle.textContent = isPassword ? "Hide" : "Show";
+
+                toggle.setAttribute(
+                    "aria-label",
+                    isPassword ? "Hide password" : "Show password"
+                );
+            });
+        })();
+    </script>
+
+</body>
+</html>

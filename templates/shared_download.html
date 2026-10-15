@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure File Download</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+            font-family: Inter, "Segoe UI", sans-serif;
+            color: #edf2ff;
+            background:
+                radial-gradient(ellipse at top left, #202b62 0, transparent 48%),
+                radial-gradient(ellipse at bottom right, #30205b 0, transparent 45%),
+                #090d19;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 470px;
+            padding: 36px;
+            text-align: center;
+            background: rgba(21, 28, 48, 0.82);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 24px;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(18px);
+        }
+
+        .icon {
+            width: 68px;
+            height: 68px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 22px;
+            border-radius: 20px;
+            background: rgba(99, 102, 241, 0.16);
+            border: 1px solid rgba(129, 140, 248, 0.3);
+            font-size: 30px;
+        }
+
+        h1 {
+            margin: 0 0 12px;
+            font-size: 27px;
+            letter-spacing: -0.7px;
+        }
+
+        .description {
+            margin: 0 0 24px;
+            color: #aab5cd;
+            line-height: 1.65;
+            font-size: 14px;
+        }
+
+        .file {
+            margin-bottom: 22px;
+            padding: 15px;
+            overflow-wrap: anywhere;
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.035);
+            font-size: 14px;
+        }
+
+        .file-label {
+            display: block;
+            margin-bottom: 7px;
+            color: #8e9bb7;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
+
+        .download-button {
+            width: 100%;
+            padding: 15px 20px;
+            border: 0;
+            border-radius: 13px;
+            color: white;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .download-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .download-button:disabled {
+            opacity: 0.65;
+            cursor: wait;
+        }
+
+        .remaining {
+            margin: 17px 0 0;
+            color: #9caad0;
+            font-size: 12px;
+        }
+
+        .security {
+            margin-top: 25px;
+            padding-top: 19px;
+            border-top: 1px solid rgba(148, 163, 184, 0.14);
+            color: #8d9bb6;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 26px 21px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="card">
+        <div class="icon" aria-hidden="true">🔐</div>
+
+        <h1>Secure File Download</h1>
+
+        <p class="description">
+            A file has been securely shared with you.
+            Select the button below when you're ready to download it.
+        </p>
+
+        <div class="file">
+            <span class="file-label">Shared file</span>
+            <strong>{{ file_name }}</strong>
+        </div>
+
+        <form method="POST"
+              action="{{ url_for('sharing.access_shared_file', token=token) }}"
+              id="download-form">
+
+            <input type="hidden"
+                   name="csrf_token"
+                   value="{{ csrf_token() }}">
+
+            <button class="download-button"
+                    type="submit"
+                    id="download-button">
+                Download Secure File
+            </button>
+        </form>
+
+        {% if downloads_remaining is not none %}
+            <p class="remaining">
+                {{ downloads_remaining }} download{{ '' if downloads_remaining == 1 else 's' }} remaining
+            </p>
+        {% else %}
+            <p class="remaining">
+                No download limit has been set.
+            </p>
+        {% endif %}
+
+        <div class="security">
+            🔒 Protected share link · Encrypted file storage<br>
+            Opening this page does not consume a download.
+        </div>
+    </main>
+
+    <script>
+        document.getElementById("download-form").addEventListener("submit", function () {
+            const button = document.getElementById("download-button");
+            button.disabled = true;
+            button.textContent = "Preparing secure download…";
+        });
+    </script>
+    
+</body>
+</html>

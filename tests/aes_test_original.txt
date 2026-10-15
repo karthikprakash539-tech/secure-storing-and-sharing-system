@@ -1,0 +1,1 @@
+Secure File Gateway AES-256-GCM test. This data must decrypt exactly.

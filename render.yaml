@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: secure-gateway
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+    healthCheckPath: /
+    disk:
+      name: secure-gateway-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_BACKEND
+        value: supabase
+      - key: SUPABASE_DB_URL
+        sync: false
+      - key: SESSION_COOKIE_SECURE
+        value: "true"
+      - key: UPLOAD_FOLDER
+        value: /var/data/uploads
+      - key: ENCRYPTED_FOLDER
+        value: /var/data/encrypted
+      - key: QUARANTINE_FOLDER
+        value: /var/data/uploads/quarantine
+      - key: CLAMAV_ENABLED
+        value: "false"

@@ -1,0 +1,735 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#080d18">
+    <meta name="description" content="Secure File Gateway helps you scan, encrypt, and share files with controlled access.">
+    <title>Secure File Gateway | Protect What Matters</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #080d18;
+            --panel: #101a2b;
+            --text: #edf3ff;
+            --muted: #99a9c3;
+            --blue: #8aa7ff;
+            --green: #65e6bd;
+            --border: rgba(155, 177, 220, .15);
+        }
+
+        * { box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 90px;
+        }
+
+        body {
+            margin: 0;
+            background:
+                radial-gradient(ellipse at 12% 8%, rgba(65, 91, 210, .18), transparent 34%),
+                radial-gradient(ellipse at 90% 35%, rgba(30, 190, 155, .09), transparent 30%),
+                var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.65;
+        }
+
+        a { color: inherit; text-decoration: none; }
+        button, a { -webkit-tap-highlight-color: transparent; }
+
+        .wrap {
+            width: min(1160px, calc(100% - 44px));
+            margin: auto;
+        }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-bottom: 1px solid var(--border);
+            background: rgba(8, 13, 24, .82);
+            backdrop-filter: blur(18px);
+        }
+
+        .nav-inner {
+            min-height: 78px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 17px;
+            letter-spacing: -.5px;
+            white-space: nowrap;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(101, 230, 189, .28);
+            border-radius: 13px;
+            color: var(--green);
+            background: rgba(101, 230, 189, .08);
+            font-size: 23px;
+        }
+
+        .brand em {
+            color: var(--green);
+            font-style: normal;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 29px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .nav-links a:hover { color: var(--text); }
+
+        .button {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 9px;
+            padding: 12px 19px;
+            border-radius: 11px;
+            border: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 700;
+            transition: transform .2s ease, background .2s ease, border-color .2s ease;
+        }
+
+        .button:hover { transform: translateY(-2px); }
+
+        .button-primary {
+            background: var(--green);
+            color: #071a17;
+            border-color: var(--green);
+        }
+
+        .button-primary:hover { background: #8af3d0; }
+
+        .button-secondary {
+            background: rgba(255,255,255,.025);
+            color: var(--text);
+        }
+
+        .button-secondary:hover {
+            background: rgba(255,255,255,.07);
+            border-color: rgba(155,177,220,.32);
+        }
+
+        .hero {
+            min-height: 610px;
+            padding: 92px 0 86px;
+            display: grid;
+            grid-template-columns: 1.05fr .95fr;
+            align-items: center;
+            gap: 65px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            padding: 7px 12px;
+            border: 1px solid rgba(101,230,189,.22);
+            border-radius: 100px;
+            background: rgba(101,230,189,.06);
+            color: var(--green);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.15px;
+            text-transform: uppercase;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 12px rgba(101,230,189,.8);
+        }
+
+        h1, h2, h3, p { margin-top: 0; }
+
+        h1 {
+            margin: 24px 0 20px;
+            max-width: 650px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(43px, 5.3vw, 69px);
+            line-height: 1.08;
+            letter-spacing: -3.4px;
+        }
+
+        .gradient-text {
+            color: var(--green);
+            background: linear-gradient(100deg, var(--green), var(--blue));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-copy {
+            max-width: 510px;
+            color: var(--muted);
+            font-size: 16px;
+            line-height: 1.9;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 13px;
+            margin-top: 30px;
+        }
+
+        .hero-note {
+            margin-top: 22px;
+            color: #7586a1;
+            font-size: 11px;
+        }
+
+        .visual {
+            position: relative;
+            padding: 25px;
+            border: 1px solid rgba(143,167,221,.21);
+            border-radius: 27px;
+            background: linear-gradient(145deg, rgba(21,34,57,.9), rgba(10,17,30,.88));
+            box-shadow: 0 30px 100px rgba(0,0,0,.3), 0 0 65px rgba(84,119,255,.08);
+            overflow: hidden;
+        }
+
+        .visual::before {
+            content: "";
+            position: absolute;
+            width: 240px;
+            height: 240px;
+            top: -120px;
+            right: -80px;
+            background: rgba(101,230,189,.09);
+            filter: blur(55px);
+            border-radius: 50%;
+        }
+
+        .visual-top, .visual-bottom {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .visual-label {
+            color: var(--muted);
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .live {
+            color: var(--green);
+            font-size: 11px;
+        }
+
+        .shield-stage {
+            position: relative;
+            min-height: 265px;
+            display: grid;
+            place-items: center;
+        }
+
+        .orbit {
+            position: absolute;
+            width: 240px;
+            height: 240px;
+            border: 1px solid rgba(138,167,255,.15);
+            border-radius: 50%;
+            animation: rotate 24s linear infinite;
+        }
+
+        .orbit::before, .orbit::after {
+            content: "";
+            position: absolute;
+            border: 1px solid rgba(101,230,189,.13);
+            border-radius: 50%;
+        }
+
+        .orbit::before { inset: 23px; }
+        .orbit::after { inset: 48px; }
+
+        .shield {
+            position: relative;
+            width: 126px;
+            height: 145px;
+            display: grid;
+            place-items: center;
+            clip-path: polygon(50% 0, 94% 17%, 88% 67%, 70% 87%, 50% 100%, 30% 87%, 12% 67%, 6% 17%);
+            background: linear-gradient(150deg, rgba(101,230,189,.24), rgba(93,126,255,.15));
+            filter: drop-shadow(0 0 28px rgba(101,230,189,.15));
+        }
+
+        .shield-inner {
+            width: 111px;
+            height: 130px;
+            display: grid;
+            place-items: center;
+            clip-path: polygon(50% 0, 94% 17%, 88% 67%, 70% 87%, 50% 100%, 30% 87%, 12% 67%, 6% 17%);
+            background: #111f33;
+            color: var(--green);
+            font-size: 53px;
+        }
+
+        .visual-stats {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .stat {
+            padding: 13px 10px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: rgba(255,255,255,.025);
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 3px;
+        }
+
+        .stat span {
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .section {
+            padding: 88px 0;
+            border-top: 1px solid rgba(155,177,220,.09);
+        }
+
+        .section-heading {
+            max-width: 650px;
+            margin: 0 auto 43px;
+            text-align: center;
+        }
+
+        .section-kicker {
+            color: var(--green);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+        }
+
+        h2 {
+            margin: 13px 0;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(30px, 4vw, 43px);
+            line-height: 1.2;
+            letter-spacing: -1.5px;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 17px;
+        }
+
+        .feature {
+            padding: 26px;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            background: linear-gradient(145deg, rgba(17,29,48,.78), rgba(11,19,32,.7));
+            transition: transform .2s ease, border-color .2s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-4px);
+            border-color: rgba(101,230,189,.28);
+        }
+
+        .feature-icon {
+            width: 46px;
+            height: 46px;
+            display: grid;
+            place-items: center;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: rgba(138,167,255,.08);
+            font-size: 21px;
+        }
+
+        .feature h3 {
+            margin: 19px 0 8px;
+            font-size: 16px;
+        }
+
+        .feature p {
+            margin-bottom: 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.85;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .step {
+            padding: 23px 19px;
+            border-top: 1px solid rgba(101,230,189,.4);
+            background: linear-gradient(180deg, rgba(101,230,189,.035), transparent);
+        }
+
+        .step-number {
+            color: var(--green);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 12px;
+        }
+
+        .step h3 {
+            margin: 14px 0 8px;
+            font-size: 15px;
+        }
+
+        .step p {
+            margin-bottom: 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .cta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 28px;
+            padding: 38px;
+            border: 1px solid rgba(101,230,189,.2);
+            border-radius: 22px;
+            background:
+                radial-gradient(ellipse at 0% 0%, rgba(101,230,189,.09), transparent 55%),
+                #101a2b;
+        }
+
+        .cta h2 { font-size: 30px; }
+        .cta p { margin-bottom: 0; color: var(--muted); font-size: 13px; }
+
+        .footer {
+            padding: 30px 0;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .footer-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links { display: flex; gap: 20px; }
+        .footer a:hover { color: var(--green); }
+
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 900px) {
+            .hero { grid-template-columns: 1fr; gap: 42px; padding-top: 70px; }
+            .hero-copy { max-width: 650px; }
+            .visual { max-width: 560px; width: 100%; margin: auto; }
+            .features { grid-template-columns: repeat(2, 1fr); }
+            .steps { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .wrap { width: min(100% - 30px, 1160px); }
+            .nav-inner { min-height: 68px; }
+            .brand { font-size: 14px; }
+            .brand-icon { width: 35px; height: 35px; }
+            .nav-links { gap: 12px; }
+            .nav-links .optional { display: none; }
+            .nav-links .button { padding: 10px 12px; font-size: 12px; }
+            .hero { min-height: auto; padding: 61px 0; }
+            h1 { letter-spacing: -2px; }
+            .hero-copy { font-size: 14px; }
+            .visual { padding: 17px; border-radius: 20px; }
+            .shield-stage { min-height: 230px; }
+            .orbit { width: 205px; height: 205px; }
+            .features, .steps { grid-template-columns: 1fr; }
+            .section { padding: 65px 0; }
+            .feature { padding: 23px; }
+            .cta { padding: 25px; align-items: flex-start; flex-direction: column; }
+            .footer-inner { align-items: flex-start; flex-direction: column; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: .01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<header class="navbar">
+    <div class="wrap nav-inner">
+        <a class="brand" href="/">
+            <span class="brand-icon">⌑</span>
+            <span>Secure File <em>Gateway</em></span>
+        </a>
+
+        <nav class="nav-links" aria-label="Main navigation">
+            <a class="optional" href="#features">Features</a>
+            <a class="optional" href="#how-it-works">How it works</a>
+            <a class="button button-secondary" href="/login">Sign in ↗</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="wrap hero">
+        <div>
+            <span class="eyebrow">
+                <span class="status-dot"></span>
+                Secure file management
+            </span>
+
+            <h1>
+                Your files.<br>
+                Your control.<br>
+                <span class="gradient-text">Your security.</span>
+            </h1>
+
+            <p class="hero-copy">
+                A secure workspace for handling sensitive files.
+                Scan uploads, protect data with encryption, and share
+                files through controlled links—all in one place.
+            </p>
+
+            <div class="hero-actions">
+                <a class="button button-primary" href="/register">
+                    Get started <span aria-hidden="true">→</span>
+                </a>
+                <a class="button button-secondary" href="#features">
+                    Explore features ↓
+                </a>
+            </div>
+
+            <p class="hero-note">
+                Built for safer file handling and controlled access.
+            </p>
+        </div>
+
+        <div class="visual" aria-label="Illustration of a protected file workspace">
+            <div class="visual-top">
+                <span class="visual-label">Security workspace</span>
+                <span class="live"><span class="status-dot" style="display:inline-block;margin-right:5px"></span> Protection tools</span>
+            </div>
+
+            <div class="shield-stage">
+                <div class="orbit"></div>
+                <div class="shield">
+                    <div class="shield-inner">⌑</div>
+                </div>
+            </div>
+
+            <div class="visual-bottom">
+                <span class="visual-label">Your files, your control</span>
+                <span class="live">Secure workflow</span>
+            </div>
+
+            <div class="visual-stats" style="margin-top:18px">
+                <div class="stat">
+                    <strong>Encryption</strong>
+                    <span>Data protection</span>
+                </div>
+                <div class="stat">
+                    <strong>Scanning</strong>
+                    <span>Threat checks</span>
+                </div>
+                <div class="stat">
+                    <strong>Access</strong>
+                    <span>Controlled sharing</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="features">
+        <div class="wrap">
+            <div class="section-heading">
+                <span class="section-kicker">Built for security</span>
+                <h2>More control over every file.</h2>
+                <p>
+                    A focused set of tools designed to help protect files
+                    throughout their handling and sharing lifecycle.
+                </p>
+            </div>
+
+            <div class="features">
+                <article class="feature">
+                    <div class="feature-icon" aria-hidden="true">🔐</div>
+                    <h3>File encryption</h3>
+                    <p>
+                        Protect stored files with the encryption workflow
+                        configured in your Secure File Gateway installation.
+                    </p>
+                </article>
+
+                <article class="feature">
+                    <div class="feature-icon" aria-hidden="true">🛡️</div>
+                    <h3>Malware scanning</h3>
+                    <p>
+                        Check uploaded files using the available malware
+                        scanning service before handling them further.
+                    </p>
+                </article>
+
+                <article class="feature">
+                    <div class="feature-icon" aria-hidden="true">🔗</div>
+                    <h3>Controlled sharing</h3>
+                    <p>
+                        Share files through configured links with expiration
+                        and download restrictions where supported.
+                    </p>
+                </article>
+
+                <article class="feature">
+                    <div class="feature-icon" aria-hidden="true">📁</div>
+                    <h3>File management</h3>
+                    <p>
+                        Keep supported file operations together in one
+                        workspace instead of scattered workflows.
+                    </p>
+                </article>
+
+                <article class="feature">
+                    <div class="feature-icon" aria-hidden="true">🔍</div>
+                    <h3>Rescan workflow</h3>
+                    <p>
+                        Run the application's available scanning workflow
+                        again when a file needs another security check.
+                    </p>
+                </article>
+
+                <article class="feature">
+                    <div class="feature-icon" aria-hidden="true">📋</div>
+                    <h3>Security activity</h3>
+                    <p>
+                        Use available operational logs and audit records
+                        to help review file activity and troubleshoot issues.
+                    </p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="how-it-works">
+        <div class="wrap">
+            <div class="section-heading">
+                <span class="section-kicker">Simple workflow</span>
+                <h2>From upload to sharing.</h2>
+                <p>
+                    Follow the security steps available in your application
+                    to handle files more carefully.
+                </p>
+            </div>
+
+            <div class="steps">
+                <article class="step">
+                    <span class="step-number">STEP 01</span>
+                    <h3>Upload</h3>
+                    <p>Select a file you have permission to store or share.</p>
+                </article>
+
+                <article class="step">
+                    <span class="step-number">STEP 02</span>
+                    <h3>Scan</h3>
+                    <p>Use the configured malware scanner to check the file.</p>
+                </article>
+
+                <article class="step">
+                    <span class="step-number">STEP 03</span>
+                    <h3>Protect</h3>
+                    <p>Apply the application's configured encryption workflow.</p>
+                </article>
+
+                <article class="step">
+                    <span class="step-number">STEP 04</span>
+                    <h3>Share carefully</h3>
+                    <p>Use available access controls and share-link limits.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="wrap">
+            <div class="cta">
+                <div>
+                    <span class="section-kicker">Take control</span>
+                    <h2>Ready to protect your files?</h2>
+                    <p>Sign in or create an account to access your workspace.</p>
+                </div>
+
+                <div class="hero-actions" style="margin-top:0">
+                    <a class="button button-primary" href="/register">Create account →</a>
+                    <a class="button button-secondary" href="/login">Sign in</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="wrap footer-inner">
+        <a class="brand" href="/" style="font-size:13px">
+            <span class="brand-icon" style="width:32px;height:32px;font-size:18px">⌑</span>
+            <span>Secure File <em>Gateway</em></span>
+        </a>
+
+        <span>Designed for safer file handling. No system can guarantee absolute security.</span>
+
+        <div class="footer-links">
+            <a href="{{ url_for('terms') }}">Terms &amp; Conditions</a>
+            <a href="/login">Sign in</a>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
