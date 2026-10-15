@@ -6,7 +6,7 @@ Secure Gateway is a Flask application for authenticated file uploads, malware sc
 
 - Python 3.10 or newer
 - MySQL for local development, or a Supabase project with the provided tables already created
-- ClamAV if malware scanning is enabled
+- ClamAV daemon if malware scanning is enabled
 
 ## Local Setup
 
@@ -40,6 +40,18 @@ python app.py
 
 Open `http://127.0.0.1:5000`.
 
+## ClamAV Scanning
+
+Uploads already use ClamAV through the `clamd` client; no VirusTotal API key is used. To scan locally, start a ClamAV daemon that accepts TCP connections on port `3310`, then set:
+
+```dotenv
+CLAMAV_ENABLED=true
+CLAMAV_HOST=localhost
+CLAMAV_PORT=3310
+```
+
+The daemon must have current virus definitions and be reachable from the Flask process. If the scanner is unavailable, the application does not mark files as safe.
+
 ## Supabase Database
 
 The application uses direct PostgreSQL connections for its SQL queries and transactions. The Supabase project URL and publishable key are not database credentials. In the Supabase dashboard, copy the database connection string from **Project Settings > Database > Connection string** (use the direct connection or session pooler as appropriate), then store it privately as `SUPABASE_DB_URL`. Do not commit it or paste it into public messages.
@@ -65,7 +77,7 @@ File bytes are currently stored on the application server's local filesystem; co
 
 **Render is the better fit for the current application.** It runs Flask as a persistent web service and can connect to Supabase PostgreSQL. Vercel is designed around serverless functions, while this app expects writable local directories for uploads, encryption, quarantine, and logs, and may need a reachable ClamAV daemon. Those local files are not durable on either platform's ephemeral filesystem.
 
-For Render, use `pip install -r requirements.txt` as the build command and `gunicorn app:app --bind 0.0.0.0:$PORT` as the start command. Configure the Supabase database URL and `SECRET_KEY` as private environment variables, add a persistent disk and set `UPLOAD_FOLDER`, `ENCRYPTED_FOLDER`, and `QUARANTINE_FOLDER` to paths on that disk, and provide a reachable ClamAV service if scanning is enabled. For scalable production storage, implement and use Supabase Storage in the upload, download, sharing, and deletion flows before relying on ephemeral application storage.
+For Render, use `pip install -r requirements.txt` as the build command and `gunicorn app:app --bind 0.0.0.0:$PORT` as the start command. Configure the Supabase database URL and `SECRET_KEY` as private environment variables, add a persistent disk and set `UPLOAD_FOLDER`, `ENCRYPTED_FOLDER`, and `QUARANTINE_FOLDER` to paths on that disk, and provide a reachable ClamAV daemon if scanning is enabled. The Blueprint leaves scanning disabled because a local Windows daemon cannot be reached from Render. For scalable production storage, implement and use Supabase Storage in the upload, download, sharing, and deletion flows before relying on ephemeral application storage.
 
 This repository includes a Render Blueprint in [`render.yaml`](render.yaml). Push the project to a GitHub repository, then create a Blueprint in the Render dashboard from that repository. Set `SUPABASE_DB_URL` in the Render service's private environment settings before the first deploy. The Blueprint uses a paid web-service plan and persistent disk. Malware scanning is disabled in the Blueprint because the local Windows ClamAV daemon is not reachable from Render; configure a network-accessible ClamAV service before enabling it. The application will not be fully useful for production file security until scanning is available and uploaded files are stored durably.
 "# secure-storing-and-sharing-system" 
